@@ -165,7 +165,11 @@ used when this function is called via `advice-add'."
         (if (or track-mouse
                 (and zoom-minibuffer-preserve-layout (window-minibuffer-p)))
             (get-mru-window nil nil t) (selected-window))
-      (zoom--update))))
+      ;; update the layout only if the selected window has changed
+      (unless (and (boundp 'zoom--current-window)
+                   (eq zoom--current-window (selected-window)))
+        (setq zoom--current-window (selected-window))
+        (zoom--update)))))
 
 (defun zoom--update ()
   "Update the window layout in the current frame."
